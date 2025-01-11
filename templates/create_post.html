@@ -1,0 +1,35 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<h2>Создать объявление</h2>
+<form id="createPostForm">
+    <label for="topic">Тема:</label>
+    <input type="text" id="topic" name="topic" required>
+    <label for="content">Содержание:</label>
+    <textarea id="content" name="content" required></textarea>
+    <button type="submit">Создать</button>
+</form>
+<script>
+    document.getElementById('createPostForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const topic = document.getElementById('topic').value;
+        const content = document.getElementById('content').value;
+        fetch('/api', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                method: 'create_post',
+                params: {topic, content},
+                id: 1
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.result){
+                window.location.href = '/';
+            } else {
+                alert(data.error);
+            }
+        });
+    });
+</script>
+{% endblock %}

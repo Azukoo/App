@@ -1,0 +1,78 @@
+﻿{% extends "base.html" %}
+{% block content %}
+<h2>Администрирование</h2>
+<h3>Пользователи</h3>
+<div id="users">
+</div>
+<h3>Объявления</h3>
+<div id="admin_posts">
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        loadUsers();
+        loadAdminPosts();
+    });
+
+    function loadUsers(){
+        fetch('/api', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                method: 'get_posts',
+                params: {},
+                id: 1
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+        });
+    }
+
+    function loadAdminPosts(){
+        fetch('/api', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                method: 'get_posts',
+                params: {},
+                id: 1
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.result){
+                let html = '';
+                data.result.forEach(post => {
+                    html += `<div>
+                                <h4>${post.topic}</h4>
+                                <p>${post.content}</p>
+                                <p>Автор: ${post.author}</p>
+                                <button onclick="deletePost(${post.id})">Удалить</button>
+                             </div>`;
+                });
+                document.getElementById('admin_posts').innerHTML = html;
+            }
+        });
+    }
+
+    function deletePost(postId){
+        fetch('/api', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                method: 'admin_delete_post',
+                params: {post_id: postId},
+                id: 1
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.result){
+                loadAdminPosts();
+            } else {
+                alert(data.error);
+            }
+        });
+    }
+</script>
+{% endblock %}
